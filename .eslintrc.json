@@ -1,0 +1,23 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": "airbnb-base",
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+      "no-unused-vars": 0,
+      "no-param-reassign": ["error", { "props": false }],
+      "indent": ["error", 2, { "MemberExpression": "off" }] // support d3 indent convention
+    },
+    "globals": {
+      "d3": false,
+      "LexisChart": false,
+      "BarChart": false,
+      "ScatterPlot": false
+    }
+}
