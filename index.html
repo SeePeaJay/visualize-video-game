@@ -1,18 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>D3 Project Starter Template</title>
+    <title>Visualizing Video Game Sales & Ratings</title>
     <meta charset="UTF-8">
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>    
-    <!-- Add HTML content, SVG drawing area, ... -->
-    
-    <!-- D3 bundle -->
-    <script src="js/d3.v6.min.js"></script>
+<body>
+  <h1>Visualizing Video Game Sales & Ratings</h1>
 
-    <!-- Our JS code -->
-    <script src="js/main.js"></script>
+  <!-- Add HTML content, SVG drawing area, ... -->
+  <div id="filters">
+    <input id="search-bar" type="search" placeholder="Search..">
+    <div id="bubble-vis"></div>
+  </div>
+
+  <div id="scatter-vis"></div>
+
+  <div id="game-stats">
+    <div id="game-stats-text"></div>
+    <div id="pie-vis"></div>
+  </div>
+
+  <div id="tooltip"></div>
+  
+  <!-- JS stuff -->
+  <script src="js/d3.v6.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pieChart.js"></script>
 </body>
 </html>

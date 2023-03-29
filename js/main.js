@@ -23,4 +23,14 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   });
 
   console.log(data);
+
+  const pieChart = new PieChart(
+    { parentElement: '#pie-vis' },
+    null,
+    {
+      NA_Sales: 41.36, EU_Sales: 28.96, JP_Sales: 3.77, Other_Sales: 8.45,
+    },
+  );
+
+  // TODO: handle input dropdown and selection
 });

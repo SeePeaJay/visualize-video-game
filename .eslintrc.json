@@ -17,8 +17,8 @@
     },
     "globals": {
       "d3": false,
-      "LexisChart": false,
-      "BarChart": false,
-      "ScatterPlot": false
+      "BubbleChart": false,
+      "ScatterPlot": false,
+      "PieChart": false
     }
 }
