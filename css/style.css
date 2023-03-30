@@ -17,6 +17,11 @@
   margin: 12px;
 }
 
+#filters-title {
+  align-self: flex-start;
+  margin: 12px 12px 0;
+}
+
 #search-bar {
   margin: 12px;
   width: 200px;
@@ -24,9 +29,10 @@
 
 #slider {
   padding: 0 8px; /* to make handles fit within the slider */
+  margin-top: 12px;
   margin-bottom: 48px;
   width: 200px;
-  height: 10px;
+  height: 7px;
 }
 
 /* reset default styles */
@@ -37,21 +43,26 @@
 
 /* style background of selected range */
 #slider .noUi-connect {
-  background: #999999;
+  background: #007afe;
 }
 
 /* style handles */
 #slider .noUi-handle {
-  box-shadow: none; /* reset default styles */
+  /* box-shadow: none; reset default styles */
 
   height: 18px;
   width: 18px;
-  top: -5px;
+  top: -6px;
   right: -9px; /* half the width */
   border-radius: 9px;
+  background: #eeeeee;
 }
 
 /* style tooltip */
 #slider .noUi-tooltip {
   bottom: -36px;
+}
+
+#pie-vis {
+  align-self: center;
 }
