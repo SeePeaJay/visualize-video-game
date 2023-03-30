@@ -17,6 +17,7 @@
     },
     "globals": {
       "d3": false,
+      "noUiSlider": false,
       "BubbleChart": false,
       "ScatterPlot": false,
       "PieChart": false

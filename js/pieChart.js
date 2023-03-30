@@ -40,28 +40,37 @@ class PieChart {
     // initialize legend group
     vis.legend = vis.svg.append('g');
 
-    /* set up the colors for the chart */
-    vis.color = d3.scaleOrdinal()
-      .domain(Object.keys(vis.data))
-      .range(d3.schemeSet2);
-
-    /* set up the arc generator */
-    vis.arc = d3.arc()
-      .outerRadius(vis.radius - 10)
-      .innerRadius(0);
-
-    /* set up the pie generator */
-    vis.pie = d3.pie()
-      .sort(null)
-      .value((d) => d.value);
-
     vis.updateVis();
   }
 
   updateVis() {
     const vis = this;
 
-    vis.entries = Object.keys(vis.data).map((key) => ({ key, value: vis.data[key] }));
+    vis.salesData = {
+      NA_Sales: vis.data.NA_Sales,
+      EU_Sales: vis.data.EU_Sales,
+      JP_Sales: vis.data.JP_Sales,
+      Other_Sales: vis.data.Other_Sales,
+    };
+
+    /* set up the colors for the chart */
+    vis.color = d3.scaleOrdinal()
+      .domain(Object.keys(vis.salesData))
+      .range(d3.schemeSet2);
+
+    /* set up the arc generator */
+    vis.arc = d3.arc()
+    .outerRadius(vis.radius - 10)
+    .innerRadius(0);
+
+    /* set up the pie generator */
+    vis.pie = d3.pie()
+      .sort(null)
+      .value((d) => d.value);
+
+    vis.entries = Object.keys(vis.salesData).map((key) => ({ key, value: vis.salesData[key] }));
+
+    console.log(vis.data.Name, vis.data);
 
     vis.renderVis();
     vis.renderLegend();
@@ -74,12 +83,8 @@ class PieChart {
     /* draw the slices of the pie chart */
     vis.arcs = vis.chartArea.selectAll('.arc')
       .data(vis.pie(vis.entries))
-      .enter() // enter should be fine ...
-      .append('g')
-      .attr('class', 'arc');
-
-    /* draw each slice of the pie chart */
-    vis.arcs.append('path')
+      .join('path')
+      .attr('class', 'arc')
       .attr('d', vis.arc) // must be able to access startAngle and endAngle somehow
       .attr('fill', (d) => vis.color(d.data.key)); // d.data due to pie it seems
   }
@@ -97,7 +102,7 @@ class PieChart {
     };
 
     vis.legendElements = vis.legend.selectAll('g')
-      .data(Object.keys(vis.data))
+      .data(Object.keys(vis.salesData))
       .join('g')
       .attr('transform', getTranslate);
 

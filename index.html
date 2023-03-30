@@ -14,7 +14,8 @@
   <div id="container">
     <div id="filters">
       <div id="filters-title">Filters</div>
-      <input id="search-bar" type="search" placeholder="Search..">
+      <input id="search-bar" type="search" placeholder="Search games.." list="games">
+      <datalist id="games"></datalist>
       <div id="slider"></div>
       <div id="bubble-vis">
         <img src="https://i.pinimg.com/550x/bc/e6/d7/bce6d7f0870538e474fcdd3fb4e06196.jpg" alt="" style="width:240px;height:240px;">
@@ -27,9 +28,7 @@
         <img src="https://i.pinimg.com/550x/bc/e6/d7/bce6d7f0870538e474fcdd3fb4e06196.jpg" alt="" style="width:240px;height:240px;">
       </div>
       <div id="stats">
-        <div id="stats-text">
-          <img src="https://i.pinimg.com/550x/bc/e6/d7/bce6d7f0870538e474fcdd3fb4e06196.jpg" alt="" style="width:240px;height:240px;">
-        </div>
+        <div id="stats-text"></div>
         <div id="pie-vis"></div>
       </div>
     </div>
@@ -42,22 +41,6 @@
   <script src="js/d3.v6.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/pieChart.js"></script>
-  <script>
-    var slider = document.getElementById('slider');
-
-    noUiSlider.create(slider, {
-        start: [2012, 2016],
-        connect: true,
-        range: {
-            'min': 2012,
-            'max': 2016
-        },
-        step: 1,
-        tooltips: [
-          { to: (value) => Math.round(value), },
-          { to: (value) => Math.round(value), },
-        ],
-    });
-  </script>
+  <script src="js/slider.js"></script>
 </body>
 </html>
