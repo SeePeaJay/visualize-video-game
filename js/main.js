@@ -46,9 +46,9 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   );
 
   const bubbleChart = new BubbleChart(
-      { parentElement: '#bubble-vis' },
-      null,
-      data,
+    { parentElement: '#bubble-vis' },
+    null,
+    data,
   );
 
   // initialize stats text

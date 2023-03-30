@@ -126,6 +126,7 @@ class PieChart {
     vis.legendElements.selectAll('text')
       .data((d) => [d])
       .join('text')
+      .attr('class', 'legend-category-text')
       .attr('transform', `translate(${vis.config.legendCategoryRadius * 2}, ${vis.config.legendCategoryRadius})`)
       .text((d) => d);
   }

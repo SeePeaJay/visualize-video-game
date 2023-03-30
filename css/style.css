@@ -1,5 +1,9 @@
 /* * { padding: 0; margin: 0; } */
 
+* {
+  font-family: Menlo;
+}
+
 #container, #stats {
   display: flex;
   flex-direction: row;
@@ -13,7 +17,7 @@
 
 #filters, #scatter-vis, #stats {
   border: 2px solid #eeeeee;
-  border-radius: 12px;
+  border-radius: 3px;
   margin: 12px;
 }
 
@@ -54,7 +58,7 @@
   width: 18px;
   top: -6px;
   right: -9px; /* half the width */
-  border-radius: 9px;
+  border-radius: 3px;
   background: #eeeeee;
 }
 
@@ -67,6 +71,14 @@
   margin: 12px;
 }
 
+#stats-text ul {
+  list-style: square;
+}
+
 #pie-vis {
   align-self: center;
+}
+
+#pie-vis .legend-category-text {
+  font-size: 0.7em;
 }
