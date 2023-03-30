@@ -37,15 +37,10 @@ class PieChart {
     vis.chartArea = vis.svg.append('g')
       .attr('transform', `translate(${vis.radius + vis.config.margin.left},${vis.radius + vis.config.margin.top})`);
 
-    // initialize legend group
+    /* initialize legend group */
     vis.legend = vis.svg.append('g');
 
-    vis.updateVis();
-  }
-
-  updateVis() {
-    const vis = this;
-
+    /* define sales data */
     vis.salesData = {
       NA_Sales: vis.data.NA_Sales,
       EU_Sales: vis.data.EU_Sales,
@@ -60,17 +55,31 @@ class PieChart {
 
     /* set up the arc generator */
     vis.arc = d3.arc()
-    .outerRadius(vis.radius - 10)
-    .innerRadius(0);
+      .outerRadius(vis.radius - 10)
+      .innerRadius(0);
 
     /* set up the pie generator */
     vis.pie = d3.pie()
       .sort(null)
       .value((d) => d.value);
 
+    vis.updateVis();
+  }
+
+  updateVis() {
+    const vis = this;
+
+    vis.salesData = {
+      NA_Sales: vis.data.NA_Sales,
+      EU_Sales: vis.data.EU_Sales,
+      JP_Sales: vis.data.JP_Sales,
+      Other_Sales: vis.data.Other_Sales,
+    };
+
+    /* convert sales data into a form digestable by vis.arc */
     vis.entries = Object.keys(vis.salesData).map((key) => ({ key, value: vis.salesData[key] }));
 
-    console.log(vis.data.Name, vis.data);
+    console.log(vis.data.Name, vis.salesData);
 
     vis.renderVis();
     vis.renderLegend();
