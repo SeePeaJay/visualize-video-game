@@ -5,28 +5,58 @@
     <meta charset="UTF-8">
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.css" rel="stylesheet">
 </head>
 <body>
   <h1>Visualizing Video Game Sales & Ratings</h1>
 
   <!-- Add HTML content, SVG drawing area, ... -->
-  <div id="filters">
-    <input id="search-bar" type="search" placeholder="Search..">
-    <div id="bubble-vis"></div>
-  </div>
+  <div id="container">
+    <div id="filters">
+      <input id="search-bar" type="search" placeholder="Search..">
+      <div id="slider"></div>
+      <div id="bubble-vis">
+        <img src="https://i.pinimg.com/550x/bc/e6/d7/bce6d7f0870538e474fcdd3fb4e06196.jpg" alt="" style="width:240px;height:240px;">
+      </div>
+    </div>
 
-  <div id="scatter-vis"></div>
-
-  <div id="game-stats">
-    <div id="game-stats-text"></div>
-    <div id="pie-vis"></div>
+    <div id="vis-and-stats">
+      <div id="scatter-vis">
+        <img src="https://i.pinimg.com/550x/bc/e6/d7/bce6d7f0870538e474fcdd3fb4e06196.jpg" alt="" style="width:240px;height:240px;">
+        <img src="https://i.pinimg.com/550x/bc/e6/d7/bce6d7f0870538e474fcdd3fb4e06196.jpg" alt="" style="width:240px;height:240px;">
+      </div>
+      <div id="stats">
+        <div id="stats-text">
+          <img src="https://i.pinimg.com/550x/bc/e6/d7/bce6d7f0870538e474fcdd3fb4e06196.jpg" alt="" style="width:240px;height:240px;">
+        </div>
+        <div id="pie-vis"></div>
+      </div>
+    </div>
   </div>
 
   <div id="tooltip"></div>
   
   <!-- JS stuff -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
   <script src="js/d3.v6.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/pieChart.js"></script>
+  <script>
+    var slider = document.getElementById('slider');
+
+    noUiSlider.create(slider, {
+        start: [2012, 2016],
+        connect: true,
+        range: {
+            'min': 2012,
+            'max': 2016
+        },
+        step: 1,
+        tooltips: [
+          { to: (value) => Math.round(value), },
+          { to: (value) => Math.round(value), },
+        ],
+    });
+  </script>
 </body>
 </html>

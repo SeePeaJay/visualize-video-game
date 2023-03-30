@@ -1,0 +1,57 @@
+/* * { padding: 0; margin: 0; } */
+
+#container, #stats {
+  display: flex;
+  flex-direction: row;
+}
+
+#filters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#filters, #scatter-vis, #stats {
+  border: 2px solid #eeeeee;
+  border-radius: 12px;
+  margin: 12px;
+}
+
+#search-bar {
+  margin: 12px;
+  width: 200px;
+}
+
+#slider {
+  padding: 0 8px; /* to make handles fit within the slider */
+  margin-bottom: 48px;
+  width: 200px;
+  height: 10px;
+}
+
+/* reset default styles */
+#slider .noUi-handle::before,
+#slider .noUi-handle::after {
+  display: none;
+}
+
+/* style background of selected range */
+#slider .noUi-connect {
+  background: #999999;
+}
+
+/* style handles */
+#slider .noUi-handle {
+  box-shadow: none; /* reset default styles */
+
+  height: 18px;
+  width: 18px;
+  top: -5px;
+  right: -9px; /* half the width */
+  border-radius: 9px;
+}
+
+/* style tooltip */
+#slider .noUi-tooltip {
+  bottom: -36px;
+}

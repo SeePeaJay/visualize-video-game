@@ -68,14 +68,14 @@ class PieChart {
     /* Draw the slices of the pie chart */
     vis.arcs = vis.chartArea.selectAll('.arc')
       .data(vis.pie(vis.entries))
-      .enter()
+      .enter() // enter should be fine ...
       .append('g')
       .attr('class', 'arc');
 
     // Draw each slice of the pie chart
     vis.arcs.append('path')
-      .attr('d', vis.arc)
-      .attr('fill', (d) => vis.color(d.data.key)); // .data due to pie it seems
+      .attr('d', vis.arc) // must be able to access startAngle and endAngle somehow
+      .attr('fill', (d) => vis.color(d.data.key)); // d.data due to pie it seems
 
     // Add labels to the slices
     vis.arcs.append('text')
