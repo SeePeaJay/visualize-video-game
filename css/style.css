@@ -15,6 +15,10 @@
   align-items: center;
 }
 
+#stats {
+  justify-content: space-between;
+}
+
 #filters, #scatter-vis, #stats {
   border: 2px solid #eeeeee;
   border-radius: 3px;
@@ -38,22 +42,18 @@
   width: 200px;
   height: 7px;
 }
-
 /* reset default styles */
 #slider .noUi-handle::before,
 #slider .noUi-handle::after {
   display: none;
 }
-
 /* style background of selected range */
 #slider .noUi-connect {
   background: #007afe;
 }
-
 /* style handles */
 #slider .noUi-handle {
   /* box-shadow: none; reset default styles */
-
   height: 18px;
   width: 18px;
   top: -6px;
@@ -61,16 +61,33 @@
   border-radius: 3px;
   background: #eeeeee;
 }
-
 /* style tooltip */
 #slider .noUi-tooltip {
   bottom: -36px;
 }
 
+#scatterplot-title {
+  fill: black;
+  text-anchor: start; /* start rather than middle to position title at the top-left area of the plot. */
+  font-weight: bold;
+  font-size: 1.5em;
+}
+/* style scatter axis titles */
+.scatterplot-axis__label {
+  fill: black;
+  text-anchor: end; /* end rather than start to position axis titles far away from the corner; you prob want to use middle if you want to align the axis title at the middle? */
+  font-weight: bold;
+  font-size: 1em;
+}
+/* style point elements in scatterplot */
+.point {
+  fill: #777777;
+  fill-opacity: 0.3;
+}
+
 #stats-text {
   margin: 12px;
 }
-
 #stats-text ul {
   list-style: square;
 }
@@ -78,7 +95,12 @@
 #pie-vis {
   align-self: center;
 }
-
 #pie-vis .legend-category-text {
   font-size: 0.7em;
+}
+#piechart-title {
+  fill: black;
+  text-anchor: middle; /* middle to position title at the middle region of the chart. */
+  font-weight: bold;
+  font-size: 0.8em;
 }
