@@ -5,7 +5,7 @@ class PieChart {
       containerWidth: 300,
       containerHeight: 200,
       margin: {
-        top: 10, right: 110, bottom: 10, left: 10,
+        top: 20, right: 110, bottom: 20, left: 20,
       },
       legendCategoryWidth: 80,
       legendCategoryHeight: 14,
@@ -39,6 +39,12 @@ class PieChart {
 
     /* initialize legend group */
     vis.legend = vis.svg.append('g');
+
+    /* append vis title */
+    vis.chartArea.append('text')
+      .attr('id', 'piechart-title')
+      .text('Distribution of Sales')
+      .attr('transform', 'translate(0, -84)');
 
     /* define sales data */
     vis.salesData = {
