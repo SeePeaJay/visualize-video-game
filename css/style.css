@@ -84,6 +84,26 @@
   fill: #777777;
   fill-opacity: 0.3;
 }
+.point--hover {
+  fill: black;
+  stroke: black;
+}
+.point--selected {
+  fill: orange;
+  stroke: black;
+}
+/* style the tooltip */
+#tooltip {
+  position: absolute;
+  display: none;
+  white-space: pre-wrap;
+  background-color: white;
+  padding: 5px;
+  box-shadow: 2px 2px 12px #999;
+  font-size: 0.8em;
+  border-radius: 3px;
+  list-style-position: outside;
+}
 
 #stats-text {
   margin: 12px;
@@ -91,7 +111,6 @@
 #stats-text ul {
   list-style: square;
 }
-
 #pie-vis {
   align-self: center;
 }

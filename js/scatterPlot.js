@@ -10,9 +10,12 @@ class ScatterPlot {
         bottom: 50,
         left: 50,
       },
+      tooltipPadding: 12,
+
       title: _config.title,
       xAxisTitle: _config.xAxisTitle,
       yAxisTitle: _config.yAxisTitle,
+      selectedGameId: null,
     };
     this.dispatcher = _dispatcher;
     this.data = _data;
@@ -30,7 +33,7 @@ class ScatterPlot {
 
     /* define size of SVG drawing area */
     vis.svg = d3.select(vis.config.parentElement).append('svg')
-      .attr('id', 'scatter-plot')
+      .attr('id', `scatter-plot-${vis.config.xAxisTitle === 'User Scores' ? '1' : '2'}`)
       .attr('width', vis.config.containerWidth)
       .attr('height', vis.config.containerHeight);
 
@@ -104,10 +107,43 @@ class ScatterPlot {
     vis.points = vis.chart.selectAll('.point')
       .data(vis.data)
       .join('circle')
-      .attr('class', 'point')
+      .attr('class', (d) => {
+        let pointClass = 'point';
+
+        if (vis.config.selectedGameId === d.id) {
+          pointClass += ' point--selected';
+        }
+
+        return pointClass;
+      })
       .attr('diff', (d) => d.Review_Score_Diff)
       .attr('cx', (d) => (vis.config.xAxisTitle === 'User Scores' ? vis.xScale(d.User_Score) : vis.xScale(d.Global_Sales)))
       .attr('cy', (d) => (vis.config.yAxisTitle === 'Critic Scores' ? vis.yScale(d.Critic_Score) : vis.yScale(d.Review_Score_Diff)))
-      .attr('r', 4);
+      .attr('r', 4)
+
+      // styling & tooltip on mouse events
+      .on('mouseover', (event, d) => {
+        d3.selectAll('.point').filter((point) => d.id === point.id).classed('point--hover', true);
+
+        d3.select('#tooltip')
+          .style('display', 'block')
+          .html(`<div class="tooltip-label"><strong>${d.Name}</strong>\n<ul>${vis.config.xAxisTitle === 'User Scores' ? `<li>Critic Scores: ${d.Critic_Score}</li><li>User Scores: ${d.User_Score}</li>` : `<li>Critic - User Score: ${d.Review_Score_Diff}</li><li>Global Sales (millions): ${d.Global_Sales}</li>`}</ul></div>`);
+      })
+      .on('mousemove', (event) => {
+        d3.select('#tooltip')
+          .style('left', `${event.pageX + vis.config.tooltipPadding}px`)
+          .style('top', `${event.pageY + vis.config.tooltipPadding}px`);
+      })
+      .on('mouseleave', (event, d) => {
+        d3.selectAll('.point').filter((point) => d.id === point.id).classed('point--hover', false);
+
+        d3.select('#tooltip').style('display', 'none');
+      })
+
+      .on('click', (event, d) => {
+        d3.selectAll('.point').classed('point--selected', false);
+
+        vis.dispatcher.call('onPointClick', event, d.id);
+      });
   }
 }

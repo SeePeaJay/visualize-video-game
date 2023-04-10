@@ -1,4 +1,9 @@
 /**
+ * Initialize dispatcher that is used to orchestrate events
+ */
+const dispatcher = d3.dispatch('onPointClick');
+
+/**
  * Load data from CSV file asynchronously and render charts
  */
 d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
@@ -52,14 +57,14 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     {
       parentElement: '#scatter-vis', title: 'Correlation b/w Critic & User Score', xAxisTitle: 'User Scores', yAxisTitle: 'Critic Scores',
     },
-    null,
+    dispatcher,
     data,
   );
   const scatterPlot2 = new ScatterPlot(
     {
       parentElement: '#scatter-vis', title: 'Correlation b/w Diffs in Scores & Global Sales', xAxisTitle: 'Global Sales (millions)', yAxisTitle: 'Critic - User Score',
     },
-    null,
+    dispatcher,
     data,
   );
   const pieChart = new PieChart(
@@ -68,12 +73,22 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     data[0],
   );
 
-  /* initialize stats text */
-  d3.select('#stats-text')
-    .style('display', 'block')
-    .html(`<strong>${data[0].Name}</strong><ul><li>Year of release: ${data[0].Year_of_Release}</li><li>Genre: ${data[0].Genre}</li><li>Rating: ${data[0].Rating}</li><li>Developer: ${data[0].Developer}</li><li>Publisher: ${data[0].Publisher}</li><li>Critic Score: ${data[0].Critic_Score}</li><li>Critic Count: ${data[0].Critic_Count}</li><li>User Score: ${data[0].User_Score}</li><li>User Count: ${data[0].User_Count}</li></ul>`);
+  /* initialize game stats */
+  const updateStats = (gameId) => {
+    const displayedGameData = data.find((d) => d.id === gameId);
 
-  const updateScatterPlots = () => {
+    // update stats text
+    d3.select('#stats-text')
+      .style('display', 'block')
+      .html(`<strong>${displayedGameData.Name}</strong><ul><li>Year of release: ${displayedGameData.Year_of_Release}</li><li>Genre: ${displayedGameData.Genre}</li><li>Rating: ${displayedGameData.Rating}</li><li>Developer: ${displayedGameData.Developer}</li><li>Publisher: ${displayedGameData.Publisher}</li><li>Critic Score: ${displayedGameData.Critic_Score}</li><li>Critic Count: ${displayedGameData.Critic_Count}</li><li>User Score: ${displayedGameData.User_Score}</li><li>User Count: ${displayedGameData.User_Count}</li></ul>`);
+
+    // update pie chart
+    pieChart.data = displayedGameData;
+    pieChart.updateVis();
+  };
+  updateStats(data[0].id);
+
+  const updateScatterPlots = (selectedGameId) => {
     const sliderRange = slider.noUiSlider.get().map((i) => +i);
 
     scatterPlot1.data = data.filter(
@@ -82,6 +97,12 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     scatterPlot2.data = data.filter(
       (d) => d.Year_of_Release >= sliderRange[0] && d.Year_of_Release <= sliderRange[1],
     );
+
+    if (selectedGameId) {
+      scatterPlot1.config.selectedGameId = selectedGameId;
+      scatterPlot2.config.selectedGameId = selectedGameId;
+    }
+
     scatterPlot1.updateVis();
     scatterPlot2.updateVis();
   };
@@ -102,19 +123,29 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
       // TODO: update scatter plots (need to filter by genre too)
       updateScatterPlots();
 
-      // update stats text
-      d3.select('#stats-text')
-        .style('display', 'block')
-        .html(`<strong>${selectedGameData.Name}</strong><ul><li>Year of release: ${selectedGameYear}</li><li>Genre: ${selectedGameData.Genre}</li><li>Rating: ${selectedGameData.Rating}</li><li>Developer: ${selectedGameData.Developer}</li><li>Publisher: ${selectedGameData.Publisher}</li><li>Critic Score: ${selectedGameData.Critic_Score}</li><li>Critic Count: ${selectedGameData.Critic_Count}</li><li>User Score: ${selectedGameData.User_Score}</li><li>User Count: ${selectedGameData.User_Count}</li></ul>`);
-
-      // update pie chart
-      pieChart.data = selectedGameData;
-      pieChart.updateVis();
+      // update stats
+      updateStats(selectedGameData.id);
     }
   });
 
   /* handle slider interaction */
   slider.noUiSlider.on('slide', () => {
     updateScatterPlots();
+  });
+
+  dispatcher.on('onPointClick', (selectedGameId) => {
+    const selectedGame = data.find((d) => d.id === selectedGameId);
+
+    // update search bar value
+    document.getElementById('search-bar').value = selectedGame.Name; // does not trigger input event
+
+    // update slider
+    slider.noUiSlider.set([selectedGame.Year_of_Release, selectedGame.Year_of_Release]);
+
+    // TODO: update bubblechart
+
+    // update vis & stats
+    updateScatterPlots(selectedGameId); // slide instead of update to function call w/ arg
+    updateStats(selectedGameId);
   });
 });
