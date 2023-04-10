@@ -9,7 +9,7 @@ const dispatcher = d3.dispatch('onPointClick');
 d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   /* data preprocessing */
   for (let i = 0; i < _data.length; i++) {
-    _data[i].id = i + 1;
+    _data[i].id = i; // id starts at 0
     _data[i].Name += ` [${_data[i].Platform}]`;
 
     Object.keys(_data[i]).forEach((attr) => {
@@ -30,6 +30,10 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   });
 
   console.log(data);
+
+  /* reset search bar value */
+  const searchBar = d3.select('#search-bar').node();
+  searchBar.value = '';
 
   /* populate search bar options */
   const gameNames = [...new Set(data.map((d) => d.Name))].sort();
@@ -99,8 +103,8 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     );
 
     if (selectedGameId) {
-      scatterPlot1.config.selectedGameId = selectedGameId;
-      scatterPlot2.config.selectedGameId = selectedGameId;
+      scatterPlot1.config.selectedGameId = selectedGameId >= 0 ? selectedGameId : '';
+      scatterPlot2.config.selectedGameId = selectedGameId >= 0 ? selectedGameId : '';
     }
 
     scatterPlot1.updateVis();
@@ -109,19 +113,16 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
 
   /* handle search bar interaction */
   d3.select('#search-bar').on('input', (event) => {
-    const searchBarValue = d3.select('#search-bar').node().value;
-
-    if (gameNames.includes(searchBarValue)) {
-      const selectedGameData = data.find((d) => d.Name === searchBarValue);
-      const selectedGameYear = selectedGameData.Year_of_Release;
+    if (gameNames.includes(searchBar.value)) {
+      const selectedGameData = data.find((d) => d.Name === searchBar.value);
 
       // update slider
-      slider.noUiSlider.set([selectedGameYear, selectedGameYear]);
+      slider.noUiSlider.set([selectedGameData.Year_of_Release, selectedGameData.Year_of_Release]);
 
       // TODO: update bubble chart
 
       // TODO: update scatter plots (need to filter by genre too)
-      updateScatterPlots();
+      updateScatterPlots(selectedGameData.id);
 
       // update stats
       updateStats(selectedGameData.id);
@@ -130,7 +131,25 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
 
   /* handle slider interaction */
   slider.noUiSlider.on('slide', () => {
-    updateScatterPlots();
+    const selectedGame = data.find(
+      (d) => d.id === scatterPlot1.config.selectedGameId,
+    );
+
+    if (selectedGame) {
+      const selectedGameYear = selectedGame.Year_of_Release;
+      const sliderRange = slider.noUiSlider.get().map((i) => +i);
+
+      // if slider filters out selected points, reset components
+      if (selectedGameYear < sliderRange[0] || selectedGameYear > sliderRange[1]) {
+        searchBar.value = '';
+        updateScatterPlots(-1);
+        updateStats(data[0].id);
+      } else {
+        updateScatterPlots();
+      }
+    } else {
+      updateScatterPlots();
+    }
   });
 
   dispatcher.on('onPointClick', (selectedGameId) => {
