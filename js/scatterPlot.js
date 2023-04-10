@@ -89,9 +89,6 @@ class ScatterPlot {
   updateVis() {
     const vis = this;
 
-    // vis.scatterData = vis.data.filter((d) => d.pcgdp);
-    // TODO: need to conver this into a hexbin? or somehow limit # of items?
-
     vis.renderVis();
   }
 
