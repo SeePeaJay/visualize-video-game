@@ -85,8 +85,6 @@ class PieChart {
     /* convert sales data into a form digestable by vis.arc */
     vis.entries = Object.keys(vis.salesData).map((key) => ({ key, value: vis.salesData[key] }));
 
-    console.log(vis.data.Name, vis.salesData);
-
     vis.renderVis();
     vis.renderLegend();
   }
