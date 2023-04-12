@@ -1,7 +1,7 @@
 /**
  * Initialize dispatcher that is used to orchestrate events
  */
-const dispatcher = d3.dispatch('onPointClick');
+const dispatcher = d3.dispatch('onPointClick', 'onBubbleClick');
 
 /**
  * Load data from CSV file asynchronously and render charts
@@ -53,7 +53,7 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   /* initialize vis */
   const bubbleChart = new BubbleChart(
     { parentElement: '#bubble-vis' },
-    null,
+    dispatcher,
     data,
   );
   const scatterPlot1 = new ScatterPlot(
@@ -170,10 +170,12 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     bubbleChart.data = data;
     bubbleChart.updateFromSlider(sliderRange);
 
-    // TODO: update bubblechart
-
     // update vis & stats
     updateScatterPlots(selectedGameId); // slide instead of update to function call w/ arg
     updateStats(selectedGameId);
+  });
+
+  dispatcher.on('onBubbleClick', (activeGenre) => {
+    // genre select dispatcher, to scatter
   });
 });

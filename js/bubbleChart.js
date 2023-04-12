@@ -10,6 +10,7 @@ class BubbleChart {
     };
     this.dispatcher = _dispatcher;
     this.data = _data;
+    this.dispatcher = _dispatcher;
 
     this.initVis();
   }
@@ -96,6 +97,7 @@ class BubbleChart {
             d3.select(this).classed('bubbleactive', !d3.select(this).node().classList.contains('bubbleactive'));
             activeGenre = ""; // no genres selected, set activeGenre to ""
           }
+          vis.dispatcher.call('onBubbleClick', event, activeGenre);
         });
     let labels = vis.chartArea.selectAll('.label')
         .data(vis.aggregatedData, d => d.key)
@@ -119,8 +121,6 @@ class BubbleChart {
     let filteredData = vis.data.filter(d => d.Year_of_Release >= sliderRange[0]);
     filteredData = filteredData.filter(d => d.Year_of_Release <= sliderRange[1]);
     vis.data = filteredData;
-    console.log(filteredData);
-    console.log(sliderRange);
     vis.updateVis();
   }
 }
