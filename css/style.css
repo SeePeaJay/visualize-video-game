@@ -131,5 +131,6 @@
   stroke-width: 3;
  }
 .genre-label {
+  pointer-events: none;
   font-size: 0.8em;
 }
