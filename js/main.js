@@ -29,7 +29,6 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     return !values.some((value) => value === '' || Number.isNaN(value)) && d.Year_of_Release >= 2012 && d.Critic_Count > 0 && d.User_Count > 0;
   });
 
-
   /* reset search bar value */
   const searchBar = d3.select('#search-bar').node();
   searchBar.value = '';
@@ -91,20 +90,27 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   };
   updateStats(data[0].id);
 
+  /* update scatter plot. if a valid game id is given (not -1), highlight the corresponding game;
+  otherwise, remove highlight */
   const updateScatterPlots = (selectedGameId) => {
     const sliderRange = slider.noUiSlider.get().map((i) => +i);
-
-    scatterPlot1.data = data.filter(
-      (d) => d.Year_of_Release >= sliderRange[0] && d.Year_of_Release <= sliderRange[1],
-    );
-    scatterPlot2.data = data.filter(
+    let filteredData = data.filter(
       (d) => d.Year_of_Release >= sliderRange[0] && d.Year_of_Release <= sliderRange[1],
     );
 
-    if (selectedGameId) {
-      scatterPlot1.config.selectedGameId = selectedGameId >= 0 ? selectedGameId : '';
-      scatterPlot2.config.selectedGameId = selectedGameId >= 0 ? selectedGameId : '';
+    if (selectedGameId && selectedGameId >= 0) {
+      const selectedGameGenre = data.find((d) => d.id === selectedGameId).Genre;
+      filteredData = filteredData.filter((d) => d.Genre === selectedGameGenre);
+
+      scatterPlot1.config.selectedGameId = selectedGameId;
+      scatterPlot2.config.selectedGameId = selectedGameId;
+    } else if (selectedGameId === -1) {
+      scatterPlot1.config.selectedGameId = '';
+      scatterPlot2.config.selectedGameId = '';
     }
+
+    scatterPlot1.data = filteredData;
+    scatterPlot2.data = filteredData;
 
     scatterPlot1.updateVis();
     scatterPlot2.updateVis();
@@ -120,7 +126,7 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
 
       // TODO: update bubble chart
 
-      // TODO: update scatter plots (need to filter by genre too)
+      // update scatter plots
       updateScatterPlots(selectedGameData.id);
 
       // update stats
@@ -135,11 +141,9 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     const selectedGame = data.find(
       (d) => d.id === scatterPlot1.config.selectedGameId,
     );
-
     const sliderRange = slider.noUiSlider.get().map((i) => +i);
     if (selectedGame) {
       const selectedGameYear = selectedGame.Year_of_Release;
-      // if slider filters out selected points, reset components
       if (selectedGameYear < sliderRange[0] || selectedGameYear > sliderRange[1]) {
         searchBar.value = '';
         updateScatterPlots(-1);
