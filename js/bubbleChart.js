@@ -48,38 +48,55 @@ class BubbleChart {
         .force('charge', d3.forceManyBody().strength(charge))
         .force('center', d3.forceCenter(vis.width / 2, vis.height / 2))
         .force('collision', d3.forceCollide().radius(d => vis.radiusScale(d.count) + 1));
-    console.log(vis.data);
     vis.updateVis();
   }
 
   updateVis() {
     let vis = this;
+    vis.simulation.stop();
+    vis.chartArea.selectAll('.genre-circle').remove();
+    vis.chartArea.selectAll('.genre-label').remove();
 
     //prepare data
     let aggregatedData = d3.rollup(vis.data, v => v.length, d => d.Genre);
     vis.aggregatedData = Array.from(aggregatedData, ([key, count]) => ({ key, count }));
-    console.log(aggregatedData);
     // accessors
     vis.xValue = d => d.key;
     vis.yValue = d => d.count;
     vis.radiusScale(d3.min(vis.aggregatedData, vis.yValue), d3.max(vis.aggregatedData, vis.yValue));
     vis.colourScale.domain(vis.aggregatedData.map(vis.xValue));
     vis.simulation.nodes(vis.aggregatedData);
-
     vis.renderVis();
   }
 
   /* bind data to visual elements */
   renderVis() {
     let vis = this;
+    let activeGenre = "";
 
     let nodes = vis.chartArea.selectAll('.circle')
         .data(vis.aggregatedData, d => d.key)
         .join('circle')
-        .attr('class', 'genre-circle')
+        .attr('class', d => 'genre-circle ' + d.key)
         .attr('r', d => vis.radiusScale(d.count))
-        .attr('fill', d => vis.colourScale(d.key));
-
+        .attr('fill', d => vis.colourScale(d.key))
+        .on('mouseover.style', function(event, d){
+          d3.select(this).classed('bubblehover', true);
+        })
+        .on('mouseleave.style', function(event, d){
+          d3.select(this).classed('bubblehover', false);
+        })
+        .on('click.bubble', function(event, d){
+          if (d3.select(this).node().classList.contains('bubbleactive') === false){
+            d3.selectAll(".bubbleactive").classed('bubbleactive', false);
+            d3.select(this).classed('bubbleactive', !d3.select(this).node().classList.contains('bubbleactive'));
+            activeGenre = d3.select(this).node().classList[1]; // sets activeGenre to the selected Genre name; ex// "Action"
+          }
+          else {
+            d3.select(this).classed('bubbleactive', !d3.select(this).node().classList.contains('bubbleactive'));
+            activeGenre = ""; // no genres selected, set activeGenre to ""
+          }
+        });
     let labels = vis.chartArea.selectAll('.label')
         .data(vis.aggregatedData, d => d.key)
         .join('text')
@@ -87,6 +104,7 @@ class BubbleChart {
         .attr('text-anchor', 'middle')
         .text(d => d.key);
 
+    vis.simulation.restart();
     vis.simulation.on('tick', () => {
       nodes
           .attr('cx', d => d.x)
@@ -96,5 +114,14 @@ class BubbleChart {
           .attr('x', d => d.x)
           .attr('y', d => d.y+4);
     });
+  }
+  updateFromSlider(sliderRange) {
+    let vis = this;
+    let filteredData = vis.data.filter(d => d.Year_of_Release >= sliderRange[0]);
+    filteredData = filteredData.filter(d => d.Year_of_Release <= sliderRange[1]);
+    vis.data = filteredData;
+    console.log(filteredData);
+    console.log(sliderRange);
+    vis.updateVis();
   }
 }
