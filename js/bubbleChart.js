@@ -47,7 +47,7 @@ class BubbleChart {
         .velocityDecay(0.6)
         .force('charge', d3.forceManyBody().strength(charge))
         .force('center', d3.forceCenter(vis.width / 2, vis.height / 2))
-        .force('collision', d3.forceCollide().radius(d => vis.radiusScale(d.count) + 1))
+        .force('collision', d3.forceCollide().radius(d => vis.radiusScale(d.count) + 4))
         .alphaTarget(0.8).alphaMin(0.7); // prevents the simulation from stopping
     vis.updateVis();
   }
