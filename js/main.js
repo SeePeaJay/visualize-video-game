@@ -137,7 +137,6 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     const sliderRange = slider.noUiSlider.get().map((i) => +i);
     if (selectedGame) {
       const selectedGameYear = selectedGame.Year_of_Release;
-
       // if slider filters out selected points, reset components
       if (selectedGameYear < sliderRange[0] || selectedGameYear > sliderRange[1]) {
         searchBar.value = '';
