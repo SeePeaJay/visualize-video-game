@@ -90,28 +90,31 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   };
   updateStats(data[0].id);
 
-  /* update scatter plot. if a valid game id is given (not -1), highlight the corresponding game;
-  otherwise, remove highlight */
-  const updateScatterPlots = (selectedGameId) => {
+  /* update scatter plot */
+  const updateScatterPlots = ({ idOfGameSelectedInScatter, genreSelectedInBubble }) => {
+    // reset any highlighted game in scatterplot
+    scatterPlot1.config.selectedGameId = '';
+    scatterPlot2.config.selectedGameId = '';
+
+    // filter data and possibly set highlighted game in scatter based on parameters
     const sliderRange = slider.noUiSlider.get().map((i) => +i);
     let filteredData = data.filter(
-      (d) => d.Year_of_Release >= sliderRange[0] && d.Year_of_Release <= sliderRange[1],
+      (d) => d.Year_of_Release >= sliderRange[0] && d.Year_of_Release <= sliderRange[1]
+      && (genreSelectedInBubble ? d.Genre === genreSelectedInBubble : true),
     );
+    if (idOfGameSelectedInScatter) {
+      const genreOfGameSelectedFromScatter = data.find(
+        (d) => d.id === idOfGameSelectedInScatter,
+      ).Genre;
+      filteredData = filteredData.filter((d) => d.Genre === genreOfGameSelectedFromScatter);
 
-    if (selectedGameId && selectedGameId >= 0) {
-      const selectedGameGenre = data.find((d) => d.id === selectedGameId).Genre;
-      filteredData = filteredData.filter((d) => d.Genre === selectedGameGenre);
-
-      scatterPlot1.config.selectedGameId = selectedGameId;
-      scatterPlot2.config.selectedGameId = selectedGameId;
-    } else if (selectedGameId === -1) {
-      scatterPlot1.config.selectedGameId = '';
-      scatterPlot2.config.selectedGameId = '';
+      scatterPlot1.config.selectedGameId = idOfGameSelectedInScatter;
+      scatterPlot2.config.selectedGameId = idOfGameSelectedInScatter;
     }
 
+    // assign filtered data and update vis
     scatterPlot1.data = filteredData;
     scatterPlot2.data = filteredData;
-
     scatterPlot1.updateVis();
     scatterPlot2.updateVis();
   };
@@ -127,7 +130,7 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
       // TODO: update bubble chart
 
       // update scatter plots
-      updateScatterPlots(selectedGameData.id);
+      updateScatterPlots({ idOfGameSelectedInScatter: selectedGameData.id });
 
       // update stats
       updateStats(selectedGameData.id);
@@ -136,50 +139,37 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
 
   /* handle slider interaction */
   slider.noUiSlider.on('slide', () => {
-    // if there is a game selected/highlighted in the scatterplot, and the new slider range does not
-    // include the year of the selected game, reset components
-    const selectedGame = data.find(
-      (d) => d.id === scatterPlot1.config.selectedGameId,
-    );
-    const sliderRange = slider.noUiSlider.get().map((i) => +i);
-    if (selectedGame) {
-      const selectedGameYear = selectedGame.Year_of_Release;
-      if (selectedGameYear < sliderRange[0] || selectedGameYear > sliderRange[1]) {
-        searchBar.value = '';
-        updateScatterPlots(-1);
-        updateStats(data[0].id);
-      } else {
-        updateScatterPlots();
-      }
-    } else {
-      updateScatterPlots();
-    }
-
     // bubble chart update on slider
+    const sliderRange = slider.noUiSlider.get().map((i) => +i);
     bubbleChart.data = data;
     bubbleChart.updateFromSlider(sliderRange);
+
+    // update scatterplot; any selected game in the scatterplot will be deselected
+    updateScatterPlots({});
   });
 
+  /* handler for clicking on a genre in bubble chart; should filter scatterplot points */
+  dispatcher.on('onBubbleClick', (selectedGenre) => {
+    updateScatterPlots({ genreSelectedInBubble: selectedGenre });
+  });
+
+  /* handler for clicking on a point in scatterplot */
   dispatcher.on('onPointClick', (selectedGameId) => {
     const selectedGame = data.find((d) => d.id === selectedGameId);
 
     // update search bar value
-    document.getElementById('search-bar').value = selectedGame.Name; // does not trigger input event
+    document.getElementById('search-bar').value = selectedGame.Name; // aside: does not trigger input event
 
     // update slider
     slider.noUiSlider.set([selectedGame.Year_of_Release, selectedGame.Year_of_Release]);
 
-    // update bubble chart after scatter selection and slider change
+    // TODO: update bubble chart after scatter selection and slider change
     const sliderRange = slider.noUiSlider.get().map((i) => +i);
     bubbleChart.data = data;
     bubbleChart.updateFromSlider(sliderRange);
 
     // update vis & stats
-    updateScatterPlots(selectedGameId); // slide instead of update to function call w/ arg
+    updateScatterPlots({ idOfGameSelectedInScatter: selectedGameId });
     updateStats(selectedGameId);
-  });
-
-  dispatcher.on('onBubbleClick', (activeGenre) => {
-    // genre select dispatcher, to scatter
   });
 });
