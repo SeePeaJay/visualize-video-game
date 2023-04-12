@@ -28,7 +28,11 @@ class BubbleChart {
         .range([1,4]);
 
     // colour scale
-    vis.colourScale = d3.scaleOrdinal(d3.schemeSet3);
+    vis.colourScale = d3.scaleOrdinal()
+        .domain(["Action", "Shooter" , "Platform", "Simulation", "Sports", "Role-Playing" , "Racing",
+            "Misc", "Fighting", "Strategy", "Adventure" , "Puzzle"])
+        .range(["#8dd3c7", "#ffffb3" , "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69",
+        "#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]);
 
     /* define size of SVG drawing area */
     vis.svg = d3.select('#bubble-vis').append('svg')
@@ -65,7 +69,6 @@ class BubbleChart {
     vis.xValue = d => d.key;
     vis.yValue = d => d.count;
     vis.radiusScale(d3.min(vis.aggregatedData, vis.yValue), d3.max(vis.aggregatedData, vis.yValue));
-    vis.colourScale.domain(vis.aggregatedData.map(vis.xValue));
     vis.simulation.nodes(vis.aggregatedData);
     vis.renderVis();
   }
