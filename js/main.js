@@ -90,7 +90,7 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
   };
   updateStats(data[0].id);
 
-  /* update scatter plot */
+  /* function that updates scatter plot */
   const updateScatterPlots = ({ idOfGameSelectedInScatter, genreSelectedInBubble }) => {
     // reset any highlighted game in scatterplot
     scatterPlot1.config.selectedGameId = '';
@@ -172,6 +172,6 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     updateStats(selectedGameId);
 
     // update selected bubble genre
-    bubbleChart.updateFromScatter(selectedGame.Genre)
+    bubbleChart.updateFromScatter(selectedGame.Genre);
   });
 });
