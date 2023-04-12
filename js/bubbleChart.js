@@ -10,6 +10,7 @@ class BubbleChart {
     };
     this.dispatcher = _dispatcher;
     this.data = _data;
+    this.dispatcher = _dispatcher;
 
     this.initVis();
   }
@@ -47,7 +48,7 @@ class BubbleChart {
         .velocityDecay(0.6)
         .force('charge', d3.forceManyBody().strength(charge))
         .force('center', d3.forceCenter(vis.width / 2, vis.height / 2))
-        .force('collision', d3.forceCollide().radius(d => vis.radiusScale(d.count) + 1))
+        .force('collision', d3.forceCollide().radius(d => vis.radiusScale(d.count) + 4))
         .alphaTarget(0.8).alphaMin(0.7); // prevents the simulation from stopping
     vis.updateVis();
   }
@@ -96,6 +97,7 @@ class BubbleChart {
             d3.select(this).classed('bubbleactive', !d3.select(this).node().classList.contains('bubbleactive'));
             activeGenre = ""; // no genres selected, set activeGenre to ""
           }
+          vis.dispatcher.call('onBubbleClick', event, activeGenre);
         });
     let labels = vis.chartArea.selectAll('.label')
         .data(vis.aggregatedData, d => d.key)
@@ -119,8 +121,6 @@ class BubbleChart {
     let filteredData = vis.data.filter(d => d.Year_of_Release >= sliderRange[0]);
     filteredData = filteredData.filter(d => d.Year_of_Release <= sliderRange[1]);
     vis.data = filteredData;
-    console.log(filteredData);
-    console.log(sliderRange);
     vis.updateVis();
   }
 }
