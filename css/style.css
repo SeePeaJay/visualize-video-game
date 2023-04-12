@@ -130,3 +130,6 @@
   stroke: black;
   stroke-width: 3;
  }
+.genre-label {
+  font-size: 0.8em;
+}
