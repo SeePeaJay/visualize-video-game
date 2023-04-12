@@ -105,7 +105,7 @@ class BubbleChart {
         .attr('class', 'genre-label')
         .attr('text-anchor', 'middle')
         .text(d => d.key);
-
+  // begin force simulation
     vis.simulation.on('tick', () => {
       nodes
           .attr('cx', d => d.x)
@@ -117,10 +117,17 @@ class BubbleChart {
     });
   }
   updateFromSlider(sliderRange) {
+    // update bubble chart bubble sizes and layout after change in slider year
     let vis = this;
     let filteredData = vis.data.filter(d => d.Year_of_Release >= sliderRange[0]);
     filteredData = filteredData.filter(d => d.Year_of_Release <= sliderRange[1]);
     vis.data = filteredData;
     vis.updateVis();
+  }
+  updateFromScatter(activeGenre) {
+    // update selected bubble chart genre after scatterplot selection
+    let vis = this;
+    d3.selectAll(".genre-circle").classed('bubbleactive', false);
+    d3.select('.' + activeGenre).classed('bubbleactive', true);
   }
 }

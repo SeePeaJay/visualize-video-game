@@ -163,7 +163,6 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     // update slider
     slider.noUiSlider.set([selectedGame.Year_of_Release, selectedGame.Year_of_Release]);
 
-    // TODO: update bubble chart after scatter selection and slider change
     const sliderRange = slider.noUiSlider.get().map((i) => +i);
     bubbleChart.data = data;
     bubbleChart.updateFromSlider(sliderRange);
@@ -171,5 +170,8 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
     // update vis & stats
     updateScatterPlots({ idOfGameSelectedInScatter: selectedGameId });
     updateStats(selectedGameId);
+
+    // update selected bubble genre
+    bubbleChart.updateFromScatter(selectedGame.Genre)
   });
 });
