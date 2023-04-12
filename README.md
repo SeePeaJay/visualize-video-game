@@ -9,3 +9,4 @@ Credits:
 * bubble chart tutorial for help with setting up forces: https://gist.github.com/officeofjane/a70f4b44013d06b9c0a973f163d8ab7a
 * colour scheme help: https://observablehq.com/@d3/color-schemes
 * help with getting class list for selected element: https://stackoverflow.com/questions/50191284/how-can-i-toggle-the-class-of-all-elements-in-a-selection/50194995#50194995
+* how to prevent simulation from stopping: https://stackoverflow.com/questions/46426072/what-is-the-difference-between-alphatarget-and-alphamin

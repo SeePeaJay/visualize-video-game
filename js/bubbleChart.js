@@ -47,13 +47,13 @@ class BubbleChart {
         .velocityDecay(0.6)
         .force('charge', d3.forceManyBody().strength(charge))
         .force('center', d3.forceCenter(vis.width / 2, vis.height / 2))
-        .force('collision', d3.forceCollide().radius(d => vis.radiusScale(d.count) + 1));
+        .force('collision', d3.forceCollide().radius(d => vis.radiusScale(d.count) + 1))
+        .alphaTarget(0.8).alphaMin(0.7); // prevents the simulation from stopping
     vis.updateVis();
   }
 
   updateVis() {
     let vis = this;
-    vis.simulation.stop();
     vis.chartArea.selectAll('.genre-circle').remove();
     vis.chartArea.selectAll('.genre-label').remove();
 
@@ -104,7 +104,6 @@ class BubbleChart {
         .attr('text-anchor', 'middle')
         .text(d => d.key);
 
-    vis.simulation.restart();
     vis.simulation.on('tick', () => {
       nodes
           .attr('cx', d => d.x)
