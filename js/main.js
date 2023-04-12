@@ -130,6 +130,8 @@ d3.csv('data/Video_Games_Sales_as_at_22_Dec_2016.csv').then((_data) => {
 
   /* handle slider interaction */
   slider.noUiSlider.on('slide', () => {
+    // if there is a game selected/highlighted in the scatterplot, and the new slider range does not
+    // include the year of the selected game, reset components
     const selectedGame = data.find(
       (d) => d.id === scatterPlot1.config.selectedGameId,
     );
